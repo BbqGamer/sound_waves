@@ -11,7 +11,9 @@ public:
     
     WaveForm(int Precision);
     
-    void setTab(int i, int value);
+    void setTab(int i, double value);
+    
+    double operator[](int i);
     
 };
 
