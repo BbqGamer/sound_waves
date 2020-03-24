@@ -1,5 +1,4 @@
 #include "file_writing.h"
-#include <cmath>
 
 ofstream create_wav_file(string filename, int num_channels, int sample_rate, int bit_depth)
 {
@@ -17,13 +16,13 @@ ofstream create_wav_file(string filename, int num_channels, int sample_rate, int
     write_word(f, block_align, 2); //BlockAlign
     write_word(f, bit_depth, 2); //Bits for each channel in sample
 
-    size_t data_chunk_pos = f.tellp(); //read position where real data begins
     f << "data----"; //write data header with empty space for Subchunk2Size
 
-    
-    //operations
-    
-    
+    return f;
+}
+
+void complete_wav_file(ofstream& f, size_t data_chunk_pos)
+{
     size_t file_length = f.tellp(); //read position where data ends
 
     f.seekp(data_chunk_pos + 4); //go back to Subchunk2Size
@@ -31,8 +30,7 @@ ofstream create_wav_file(string filename, int num_channels, int sample_rate, int
 
     f.seekp(4); //go back to ChunkSize
     write_word(f, file_length-8, 4); //set ChunkSize to a size of entire file - 8
-
-    return f;
+    f.close();
 }
 
 
