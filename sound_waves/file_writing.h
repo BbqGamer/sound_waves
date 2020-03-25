@@ -24,7 +24,10 @@ class WavFileProcessor
     public:
         
         WavFileProcessor(string Filename, int Num_channels, int Sample_rate, int Bit_depth);
-        ~WavFileProcessor();
+    
+        void saveFile();
+    
+        void writeNote(WaveForm waveform, double frequency, double duration, double amplitude);
     
 };
 

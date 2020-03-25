@@ -27,7 +27,20 @@ WavFileProcessor::WavFileProcessor(string Filename, int Num_channels, int Sample
     data_chunk_pos = file_stream.tellp(); //read position where real data begins
 }
 
-WavFileProcessor::~WavFileProcessor()
+void WavFileProcessor::writeNote(WaveForm waveform, double frequency, double duration, double amplitude)
+{
+    double wavelength = sample_rate / frequency;
+    
+    int precision = waveform.getPrecision();
+    double jump = waveform.getPrecision() / wavelength;
+    
+    for (int i = 0; i < num_channels * duration * sample_rate; i++)
+    {
+        write_word(int(waveform[int(i*jump) % precision] * amplitude), 2);
+    }
+}
+
+void WavFileProcessor::saveFile()
 {
     size_t file_length = file_stream.tellp(); //read position where data ends
     file_stream.seekp(data_chunk_pos + 4); //go back to Subchunk2Size

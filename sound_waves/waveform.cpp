@@ -21,15 +21,21 @@ double WaveForm::operator[](int i)
 }
 
 
+int WaveForm::getPrecision()
+{
+    return precision;
+}
+
+
 WaveForm create_sine(int precision)
 {
     WaveForm wave(precision);
     
-    double two_pi = 6.283;
+    const long double PI = 3.14159265359;
     
-    for(int i = 0; i < precision; i++)
+    for (int i = 0; i < precision; i++)
     {
-        wave.setTab(i, sin(i * two_pi/(double)precision));
+        wave.setTab(i, sin(2 * PI / precision * i));
     }
     
     return wave;

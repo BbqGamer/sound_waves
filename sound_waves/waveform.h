@@ -15,6 +15,8 @@ public:
     
     double operator[](int i);
     
+    int getPrecision();
+    
 };
 
 WaveForm create_sine(int precision);
