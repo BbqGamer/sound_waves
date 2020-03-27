@@ -29,6 +29,7 @@ WavFileProcessor::WavFileProcessor(string Filename, int Num_channels, int Sample
 
 void WavFileProcessor::writeNote(WaveForm waveform, double frequency, double duration, double amplitude)
 {
+
     double wavelength = sample_rate / frequency;
     
     int precision = waveform.getPrecision();
@@ -37,6 +38,14 @@ void WavFileProcessor::writeNote(WaveForm waveform, double frequency, double dur
     for (int i = 0; i < num_channels * duration * sample_rate; i++)
     {
         write_word(int(waveform[int(i*jump) % precision] * amplitude), 2);
+    }
+}
+
+void WavFileProcessor::writePause(double duration)
+{
+    for (int i = 0; i < num_channels * duration * sample_rate; i++)
+    {
+        write_word(0, 2);
     }
 }
 

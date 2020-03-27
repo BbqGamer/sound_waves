@@ -28,6 +28,8 @@ class WavFileProcessor
         void saveFile();
     
         void writeNote(WaveForm waveform, double frequency, double duration, double amplitude);
+        
+        void writePause(double duration);
     
 };
 

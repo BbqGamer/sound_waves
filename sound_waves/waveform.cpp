@@ -27,6 +27,8 @@ int WaveForm::getPrecision()
 }
 
 
+
+
 WaveForm create_sine(int precision)
 {
     WaveForm wave(precision);
@@ -37,6 +39,16 @@ WaveForm create_sine(int precision)
     {
         wave.setTab(i, sin(2 * PI / precision * i));
     }
+    
+    return wave;
+}
+
+WaveForm create_square()
+{
+    WaveForm wave(2);
+    
+    wave.setTab(0, 1);
+    wave.setTab(1, -1);
     
     return wave;
 }

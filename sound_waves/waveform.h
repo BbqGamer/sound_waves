@@ -21,4 +21,6 @@ public:
 
 WaveForm create_sine(int precision);
 
+WaveForm create_square();
+
 #endif

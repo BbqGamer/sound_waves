@@ -12,7 +12,15 @@ int main() {
     
     WaveForm sine = create_sine(5000);
     
-    file_processor.writeNote(sine, 880, 2, 20000);
+    file_processor.writeNote(sine, 196, 0.25, 20000);
+    file_processor.writeNote(sine, 220, 0.25, 20000);
+    file_processor.writeNote(sine, 233, 0.25, 20000);
+    file_processor.writeNote(sine, 265, 0.25, 20000);
+    file_processor.writeNote(sine, 220, 0.5, 20000);
+    file_processor.writeNote(sine, 174, 0.25, 20000);
+    file_processor.writeNote(sine, 196, 1, 20000);
+    
+    
     
     file_processor.saveFile();
         
