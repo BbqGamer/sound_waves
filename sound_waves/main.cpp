@@ -1,8 +1,11 @@
 #include "file_writing.h"
 #include "waveform.h"
 #include <cmath>
+#include "tests.h"
 
 int main() {
+    
+    RunTests();
     
     int number_of_channels = 1;
     int sample_rate = 70000;
@@ -12,16 +15,16 @@ int main() {
     
     WaveForm sine = create_sine(5000);
     
-    file_processor.writeNote(sine, 196, 0.25, 20000);
-    file_processor.writeNote(sine, 220, 0.25, 20000);
-    file_processor.writeNote(sine, 233, 0.25, 20000);
-    file_processor.writeNote(sine, 265, 0.25, 20000);
-    file_processor.writeNote(sine, 220, 0.5, 20000);
-    file_processor.writeNote(sine, 174, 0.25, 20000);
-    file_processor.writeNote(sine, 196, 1, 20000);
+    //play lick
+    file_processor.writeNote(sine, 392, 0.25, 20000);
+    file_processor.writeNote(sine, 440, 0.25, 20000);
+    file_processor.writeNote(sine, 466, 0.25, 20000);
+    file_processor.writeNote(sine, 532, 0.25, 20000);
+    file_processor.writeNote(sine, 440, 0.5, 20000);
+    file_processor.writeNote(sine, 349, 0.25, 20000);
+    file_processor.writeNote(sine, 392, 0.25, 20000);
     
-    
-    
+
     file_processor.saveFile();
         
     return 0;
