@@ -56,3 +56,12 @@ short FileProcessor::ReadShort()
         std::cout << "File is not set to read!" << std::endl;
     exit(0);
 }
+
+std::ostream& operator<<(std::ostream& os, FileProcessor& obj)
+{
+    os << "[File Processor Info]" << std::endl;
+    os << "    File name:        " << obj.filename << std::endl;
+    os << "    Processor state:  " << obj.m_state << "   (0) read / (1) write "<< std::endl;
+    
+    return os;
+}

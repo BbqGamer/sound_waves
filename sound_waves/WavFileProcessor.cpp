@@ -1,4 +1,16 @@
-#include "file_writing.h"
+#include "WavFileProcessor.h"
+
+WavFileProcessor::WavFileProcessor(std::string FileName)
+    :FileProcessor(FileName, FileProcessor::Read)
+{
+    file_stream.seekp(22);
+    ReadWord(num_channels);
+    ReadWord(sample_rate);
+    file_stream.seekp(32);
+    ReadWord(block_align);
+    ReadWord(bit_depth);
+    file_stream.seekp(44);
+}
 
 
 WavFileProcessor::WavFileProcessor(std::string FileName, int Num_channels, int Sample_rate, int Bit_depth) : FileProcessor(FileName), num_channels(Num_channels), sample_rate(Sample_rate), bit_depth(Bit_depth)
@@ -10,7 +22,7 @@ WavFileProcessor::WavFileProcessor(std::string FileName, int Num_channels, int S
     WriteWord(1, 2); //AudioFormat 1 - PCM
     WriteWord(num_channels, 2); //Number of channels (stereo)
     WriteWord(sample_rate, 4); //SampleRate (samples per second)
-    int block_align = ((bit_depth-1)/8 + 1) * num_channels; //calculate bytes for one sample
+    block_align = ((bit_depth-1)/8 + 1) * num_channels; //calculate bytes for one sample
     WriteWord(sample_rate*block_align, 4); //ByteRate (bytes of data per second)
     WriteWord(block_align, 2); //BlockAlign
     WriteWord(bit_depth, 2); //Bits for each channel in sample
@@ -30,6 +42,22 @@ void WavFileProcessor::saveFile()
     file_stream.seekp(4); //go back to ChunkSize
     WriteWord(file_length-8, 4); //set ChunkSize to a size of entire file - 8
     closeFile();
+}
+
+
+std::ostream& operator<<(std::ostream& os, WavFileProcessor& obj)
+{
+    os << "[File Processor Info]" << std::endl;
+    os << "    File name:        " << obj.filename << std::endl;
+    os << "    Processor state:  " << obj.m_state << "   (0) read / (1) write "<< std::endl;
+    os << std::endl;
+    os << "[Wav Params]" << std::endl;
+    os << "Num channels: " << obj.num_channels << std::endl;
+    os << "Sample rate:  " << obj.sample_rate << std::endl;
+    os << "Block align:  " << obj.block_align << std::endl;
+    os << "Bit depth:    " << obj.bit_depth << std::endl;
+    
+    return os;
 }
 
 
