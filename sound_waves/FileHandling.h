@@ -11,7 +11,9 @@
  FileReader contains method readLittleEndian which is used to some number of bytes
  to a buffer. (it depends on size of a buffer).
  
- 
+ FileWriter contains method writeLittleEndian which is used to write certain word to a file,
+ size of a word depends on a size of variable type (can be also assigned explicitly).
+ It supports integer values, BUT NOT FLOAT values.
  
  Both classes close their file streams on destruction.
  
@@ -27,6 +29,12 @@ class File
     File();
     
 public:
+    
+    enum fileCodes {
+        OK,
+        readError,
+    };
+    
     File(std::string fileName, std::string extension = "", std::string directoryPath = ".");
     
     bool checkIfExists();
@@ -62,17 +70,16 @@ public:
 template <class Type>
 bool FileReader::readLittleEndian(Type& buffor)
 {
-    if(fileStream.read((char*) &buffor, sizeof(buffor)))
-        return 1;
-    else
-        return 0;
+    if(fileStream.read((char*) &buffor, sizeof(buffor))) {
+        return File::OK;
+    } else {
+        return File::readError;
+    }
 }
-
 
 
 class FileWriter : public File
 {
-    
     std::ofstream fileStream;
 
 public:
@@ -81,7 +88,7 @@ public:
     ~FileWriter();
     
     template <typename Word>
-    void writeLittleEndian(Word value, unsigned size);
+    void writeLittleEndian(Word value, unsigned size = sizeof(Word));
     
 };
 
