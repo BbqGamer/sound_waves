@@ -42,7 +42,6 @@ public:
 
     void closeFile(); //closeFile
     
-    friend std::ostream& operator<<(std::ostream& os, FileProcessor& obj);
 };
 
 template <typename Word>
@@ -57,5 +56,3 @@ void FileProcessor::ReadWord(U& variable)
 {
     file_stream.read((char*) &variable, sizeof(variable));
 }
-
-std::ostream& operator<<(std::ostream& os, FileProcessor& obj);

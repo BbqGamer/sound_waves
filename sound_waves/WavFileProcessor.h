@@ -2,17 +2,16 @@
 
 #include "FileProcessor.h"
 
-class WavFileProcessor : public FileProcessor
+class WavFileProcessor : FileProcessor
 {
     //THIS IS USED TO READ/WRITE WAV FILES
     
 public:
     
     //audio params
-    short num_channels;
+    int num_channels;
     int sample_rate;
-    short block_align; //number of bytes per sample
-    short bit_depth;
+    int bit_depth;
     
     //position of data chunk in the file
     size_t data_chunk_pos;
@@ -25,8 +24,7 @@ public:
 
     //writes closing headers
     void saveFile();
-    
-    friend std::ostream& operator<<(std::ostream& os, WavFileProcessor& obj);
+
     
     /*
      TODO
@@ -39,4 +37,4 @@ public:
 
 };
 
-std::ostream& operator<<(std::ostream& os, WavFileProcessor& obj);
+
