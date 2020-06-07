@@ -1,7 +1,7 @@
 #include "FileHandling.h"
 
-File::File(std::string fileName, std::string extension, std::string directoryPath)
-    : fileName{fileName}, extension{extension}, directoryPath{directoryPath} {}
+File::File(FileLocationDetails identification)
+    : identification{identification} {}
 
 bool File::checkIfExists() {
     std::ifstream f(getPath().c_str());
@@ -9,21 +9,21 @@ bool File::checkIfExists() {
 }
 
 std::string File::getFileName() {
-    return fileName;
+    return identification.fileName;
 }
 
 std::string File::getDirectoryPath() {
-    return directoryPath;
+    return identification.directoryPath;
 }
 
 std::string File::getExtension() {
-    return extension;
+    return identification.extension;
 }
 
 std::string File::getPath() {
-    std::string path = directoryPath + "/" + fileName;
-    if(extension.length()>0) {
-        path += "." + extension;
+    std::string path = getDirectoryPath() + "/" + getFileName();
+    if(getExtension().length()>0) {
+        path += "." + getExtension();
     }
     return path;
 }
@@ -38,8 +38,12 @@ std::ostream& operator<<(std::ostream& outs, File& fileToWrite) {
 
 
 
-FileReader::FileReader(std::string fileName, std::string extension, std::string directoryPath)
-  : File(fileName, extension, directoryPath) {
+FileReader::FileReader(FileLocationDetails identification)
+  : File(identification) {
+    
+    buffor = new char;
+    bufforSize = 1;
+    
     try {
         fileStream.open(getPath(), std::ios::in | std::ios::binary);
     }
@@ -49,14 +53,47 @@ FileReader::FileReader(std::string fileName, std::string extension, std::string 
     }
 }
     
+void FileReader::generateBuffor(unsigned int size)
+{
+    deleteBufforIfExists();
+    buffor = new char[size];
+    bufforSize = size;
+}
+    
+void FileReader::deleteBufforIfExists()
+{
+    if(!(buffor == nullptr)) {
+        delete[] buffor;
+    }
+}
+
 FileReader::~FileReader() {
+    delete[] buffor;
     fileStream.close();
+}
+    
+int FileReader::readLittleEndian()
+{
+    return getValueFromBuffor();
+}
+
+bool FileReader::readLittleEndianToBuffor()
+{
+    if(fileStream.read(buffor, bufforSize)) {
+        return File::OK;
+    }
+    return File::ReadError;
+}
+ 
+int FileReader::getValueFromBuffor()
+{
+    return *((int *) buffor);
 }
 
 
 
-FileWriter::FileWriter(std::string fileName, std::string extension, std::string directoryPath)
-    : File(fileName, extension, directoryPath) {
+FileWriter::FileWriter(FileLocationDetails identification)
+    : File(identification) {
     try {
         fileStream.open(getPath(), std::ios::out | std::ios::binary);
     }

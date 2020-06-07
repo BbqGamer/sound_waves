@@ -8,8 +8,9 @@
  File contains classes to simplify using files written in Little Endian
  It provides one base File object, and two children FileReader and FileWriter
  
- FileReader contains method readLittleEndian which is used to some number of bytes
- to a buffer. (it depends on size of a buffer).
+ FileReader contains method readLittleEndianToBuffor which is used to some number of bytes
+ to a buffor. You can specify a size of a buffor with generate Buffor.
+ (ReadLittleEndian() automatically, reads some bytes and returns value from buffor)
  
  FileWriter contains method writeLittleEndian which is used to write certain word to a file,
  size of a word depends on a size of variable type (can be also assigned explicitly).
@@ -19,12 +20,18 @@
  
  */
 
+struct FileLocationDetails
+{
+    std::string fileName;
+    std::string extension = "";
+    std::string directoryPath = ".";
+};
+
+
 class File
 {
     
-    std::string directoryPath;
-    std::string fileName;
-    std::string extension;
+    FileLocationDetails identification;
 
     File();
     
@@ -32,10 +39,10 @@ public:
     
     enum fileCodes {
         OK,
-        readError,
+        ReadError,
     };
     
-    File(std::string fileName, std::string extension = "", std::string directoryPath = ".");
+    File(FileLocationDetails identification);
     
     bool checkIfExists();
     
@@ -44,7 +51,7 @@ public:
     std::string getExtension();
     
     //return relative path from the root of a project
-    //it might be necessary to change settings of IDE
+    //root is specified in project settings
     std::string getPath();
     
     friend std::ostream& operator<<(std::ostream& outs, File& fileToPrint);
@@ -59,23 +66,21 @@ class FileReader : public File
 {
     std::ifstream fileStream;
     
+    char * buffor = nullptr;
+    unsigned char bufforSize = 0;
+    
+    void generateBuffor(unsigned int size);
+    void deleteBufforIfExists();
+    
 public:
-    FileReader(std::string fileName, std::string extension = "", std::string directoryPath = ".");
+    FileReader(FileLocationDetails identification);
     ~FileReader();
     
-    template <class Type>
-    bool readLittleEndian(Type& buffor);
+    int getValueFromBuffor();
+    
+    bool readLittleEndianToBuffor();
+    int readLittleEndian();
 };
-
-template <class Type>
-bool FileReader::readLittleEndian(Type& buffor)
-{
-    if(fileStream.read((char*) &buffor, sizeof(buffor))) {
-        return File::OK;
-    } else {
-        return File::readError;
-    }
-}
 
 
 class FileWriter : public File
@@ -84,7 +89,7 @@ class FileWriter : public File
 
 public:
     
-    FileWriter(std::string fileName, std::string extension = "", std::string directoryPath = ".");
+    FileWriter(FileLocationDetails identification);
     ~FileWriter();
     
     template <typename Word>
@@ -98,4 +103,3 @@ void FileWriter::writeLittleEndian(Word value, unsigned size)
     for (; size; --size, value >>= 8)
     fileStream.put(static_cast <char> (value & 0xFF));
 }
-
