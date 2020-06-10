@@ -1,8 +1,14 @@
 #include "Effect.h"
 
+
+EffectApplier::EffectApplier(WavFileReader& source, std::string destinationFileName)
+: source{source}, WavFileWriter(destinationFileName, source.metaData) {
+    source.alterBuffor(source.metaData.getBytesPerSample());
+}
+
+
 void DownSampler::applyEffect() {
     int * sampleTab = new int[source.metaData.numChannels];
-    source.alterBuffor(source.metaData.getBytesPerSample());
     
     while(source.readLittleEndianToBuffor()) {
         getValuesFromFileToSampleTab(sampleTab);
@@ -27,4 +33,23 @@ void DownSampler::duplicateSamplesByAmount(int * sampleTab) {
             writeLittleEndian(sampleTab[channel],source.metaData.getBytesPerSample());
         }
     }
+}
+
+
+void BitReductor::applyEffect() {
+    while(source.readLittleEndianToBuffor())
+    {
+        reduceSample();
+    }
+}
+
+void BitReductor::reduceSample() {
+    int newValue = getReducedValue(source.getValueFromBuffor());
+    writeLittleEndian(newValue, source.metaData.getBytesPerSample());
+}
+
+int BitReductor::getReducedValue(int initValue) {
+    int decreasedValue = initValue/(float)source.metaData.getMaxAmplitude() * pow(2, bitAmount-1);
+    decreasedValue = ceil(decreasedValue);
+    return decreasedValue * source.metaData.getMaxAmplitude() / pow(2, bitAmount-1);
 }

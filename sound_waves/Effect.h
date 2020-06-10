@@ -8,8 +8,7 @@ public:
         
     WavFileReader& source;
     
-    EffectApplier(WavFileReader& source, std::string destinationFileName)
-    : source{source}, WavFileWriter(destinationFileName, source.metaData) {}
+    EffectApplier(WavFileReader& source, std::string destinationFileName);
     
     void virtual applyEffect() = 0;
 };
@@ -27,6 +26,24 @@ public:
     void applyEffect() override;
     void getValuesFromFileToSampleTab(int * sampleTab);
     void duplicateSamplesByAmount(int * sampleTab);
+};
+
+
+class BitReductor : public EffectApplier {
+    
+    char bitAmount;
+    
+public:
+    
+    BitReductor(WavFileReader& source, std::string destinationFileName, char bitAmount)
+    : EffectApplier(source, destinationFileName), bitAmount{bitAmount} {}
+    
+    void applyEffect() override;
+
+private:
+    void reduceSample();
+    int getReducedValue(int initValue);
+    
 };
 
 
