@@ -38,7 +38,7 @@ public:
     
 public:
     
-    WavFileReader(std::string fileName);
+    WavFileReader(std::string fileName, std::string directoryPath = "./inputSamples");
     void readHeaders();
     
     void skipSamples(int numSamples);

@@ -53,3 +53,19 @@ int BitReductor::getReducedValue(int initValue) {
     decreasedValue = ceil(decreasedValue);
     return decreasedValue * source.metaData.getMaxAmplitude() / pow(2, bitAmount-1);
 }
+
+
+void Amplifyer::applyEffect() {
+    while(source.readLittleEndianToBuffor())
+    {
+        adjustSample();
+    }
+}
+
+void Amplifyer::adjustSample() {
+    int newValue = source.getValueFromBuffor() * multiplyer;
+    if(newValue > source.metaData.getMaxAmplitude()) {
+        newValue = source.metaData.getMaxAmplitude();
+    }
+    writeLittleEndian(newValue, source.metaData.getBytesPerSample());
+}

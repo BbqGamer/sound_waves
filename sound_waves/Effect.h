@@ -47,7 +47,19 @@ private:
 };
 
 
-class Gain {
+class Amplifyer : public EffectApplier {
+    
+    float multiplyer;
+    
+public:
+    
+    Amplifyer(WavFileReader& source, std::string destinationFileName, float multiplyer)
+    : EffectApplier(source, destinationFileName), multiplyer{multiplyer} {}
+    
+    void applyEffect() override;
+    
+private:
+    void adjustSample();
     
 };
 

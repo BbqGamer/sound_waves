@@ -1,8 +1,8 @@
 #include "WavFileHandling.h"
 
 
-WavFileReader::WavFileReader(std::string fileName)
-: FileReader({fileName, "wav", "./inputSamples"}) {
+WavFileReader::WavFileReader(std::string fileName, std::string directoryPath)
+: FileReader({fileName, "wav", directoryPath}) {
     readHeaders();
     goToDataStart();
 }
