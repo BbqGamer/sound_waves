@@ -8,8 +8,8 @@ public:
         
     WavFileReader& source;
     
-    EffectApplier(WavFileReader& source, FileLocationDetails destinationFile)
-    : source{source}, WavFileWriter(destinationFile, source.metaData) {}
+    EffectApplier(WavFileReader& source, std::string destinationFileName)
+    : source{source}, WavFileWriter(destinationFileName, source.metaData) {}
     
     void virtual applyEffect() = 0;
 };
@@ -21,8 +21,8 @@ class DownSampler : public EffectApplier {
     
 public:
     
-    DownSampler(WavFileReader& source, FileLocationDetails destinationFile, char amount)
-    : EffectApplier(source, destinationFile), amount{amount} {}
+    DownSampler(WavFileReader& source, std::string destinationFileName, char amount)
+    : EffectApplier(source, destinationFileName), amount{amount} {}
     
     void applyEffect() override;
     void getValuesFromFileToSampleTab(int * sampleTab);
@@ -30,6 +30,7 @@ public:
 };
 
 
-class Gain
-
+class Gain {
+    
+};
 

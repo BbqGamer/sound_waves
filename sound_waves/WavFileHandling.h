@@ -9,8 +9,12 @@ struct WavInfo
     int sampleRate;
     short bitDepth;
     
+    int getBytesPerSampleTimesChannles() {
+        return getBytesPerSample() * numChannels;
+    }
+    
     int getBytesPerSample() {
-        return ((bitDepth-1)/8 + 1) * numChannels;
+        return ((bitDepth-1)/8 + 1);
     }
     
     int getByteRate() {
@@ -34,8 +38,10 @@ public:
     
 public:
     
-    WavFileReader(FileLocationDetails identification);
+    WavFileReader(std::string fileName);
     void readHeaders();
+    
+    void skipSamples(int numSamples);
     
     void goToDataStart();
     
@@ -53,7 +59,7 @@ class WavFileWriter : public FileWriter
     WavFileWriter();
     
 public:
-    WavFileWriter(FileLocationDetails identification, WavInfo metaData);
+    WavFileWriter(std::string fileName, WavInfo metaData);
     
     ~WavFileWriter();
     

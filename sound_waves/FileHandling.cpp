@@ -1,5 +1,6 @@
 #include "FileHandling.h"
 
+
 File::File(FileLocationDetails identification)
     : identification{identification} {}
 
@@ -8,22 +9,10 @@ bool File::checkIfExists() {
     return f.good();
 }
 
-std::string File::getFileName() {
-    return identification.fileName;
-}
-
-std::string File::getDirectoryPath() {
-    return identification.directoryPath;
-}
-
-std::string File::getExtension() {
-    return identification.extension;
-}
-
 std::string File::getPath() {
-    std::string path = getDirectoryPath() + "/" + getFileName();
-    if(getExtension().length()>0) {
-        path += "." + getExtension();
+    std::string path = identification.directoryPath + "/" + identification.fileName;
+    if(identification.extension.length()>0) {
+        path += "." + identification.extension;
     }
     return path;
 }
@@ -36,13 +25,21 @@ std::ostream& operator<<(std::ostream& outs, File& fileToWrite) {
     return outs;
 }
 
+void FileReader::closeIfOpen() {
+    if(fileStream.is_open()) {
+        fileStream.close();
+    }
+}
 
-
+void FileReader::skipBytes(int numBytes) {
+    std::cout << "Skiped: " << numBytes << "bytes" << std::endl;
+    fileStream.ignore(numBytes);
+}
+    
 FileReader::FileReader(FileLocationDetails identification)
   : File(identification) {
     
-    buffor = new char;
-    bufforSize = 1;
+    alterBuffor(1);
     
     try {
         fileStream.open(getPath(), std::ios::in | std::ios::binary);
@@ -53,7 +50,22 @@ FileReader::FileReader(FileLocationDetails identification)
     }
 }
     
-void FileReader::generateBuffor(unsigned int size)
+
+int FileReader::readLittleEndianFromPositionInStream(size_t position, unsigned int size) {
+    alterBuffor(size);
+    return readLittleEndianFromPositionInStream(position);
+}
+    
+int FileReader::readLittleEndianFromPositionInStream(size_t position) {
+    goToPositionInStream(position);
+    return readLittleEndian();
+}
+    
+void FileReader::goToPositionInStream(size_t position) {
+    fileStream.seekg(position);
+}
+    
+void FileReader::alterBuffor(unsigned int size)
 {
     deleteBufforIfExists();
     buffor = new char[size];
@@ -69,27 +81,27 @@ void FileReader::deleteBufforIfExists()
 
 FileReader::~FileReader() {
     delete[] buffor;
-    fileStream.close();
+    closeIfOpen();
 }
     
 int FileReader::readLittleEndian()
 {
+    readLittleEndianToBuffor();
     return getValueFromBuffor();
 }
 
 bool FileReader::readLittleEndianToBuffor()
 {
     if(fileStream.read(buffor, bufforSize)) {
-        return File::OK;
+        return 1; //returns 1 to signify that it was read succesfully
     }
-    return File::ReadError;
+    return 0;
 }
  
 int FileReader::getValueFromBuffor()
 {
     return *((int *) buffor);
 }
-
 
 
 FileWriter::FileWriter(FileLocationDetails identification)
@@ -103,6 +115,24 @@ FileWriter::FileWriter(FileLocationDetails identification)
     }
 }
     
+size_t FileWriter::getPositionInStream() {
+    return fileStream.tellp();
+}
+    
+void FileWriter::writeBigEndianString(std::string input) {
+    fileStream << input;
+}
+
 FileWriter::~FileWriter() {
-    fileStream.close();
+    closeIfOpen();
+}
+    
+void FileWriter::goToPositionInStream(size_t position) {
+    fileStream.seekp(position);
+}
+
+void FileWriter::closeIfOpen() {
+    if(fileStream.is_open()) {
+        fileStream.close();
+    }
 }

@@ -1,8 +1,8 @@
 #include "WavFileHandling.h"
 
 
-WavFileReader::WavFileReader(FileLocationDetails identification)
-: FileReader(identification) {
+WavFileReader::WavFileReader(std::string fileName)
+: FileReader({fileName, "wav", "./inputSamples"}) {
     readHeaders();
     goToDataStart();
 }
@@ -17,9 +17,12 @@ void WavFileReader::goToDataStart() {
     goToPositionInStream(44);
 }
 
+void WavFileReader::skipSamples(int numSamples) {
+    skipBytes(metaData.getBytesPerSample() * numSamples);
+}
 
-WavFileWriter::WavFileWriter(FileLocationDetails identification, WavInfo metaData)
-: FileWriter(identification), metaData{metaData} {
+WavFileWriter::WavFileWriter(std::string fileName, WavInfo metaData)
+: FileWriter({fileName, "wav", "./outputSamples"}), metaData{metaData} {
     writeHeaders();
     data_chunk_pos = getPositionInStream();
 }
@@ -32,9 +35,13 @@ void WavFileWriter::writeHeaders()
     writeLittleEndian(metaData.numChannels, 2);
     writeLittleEndian(metaData.sampleRate, 4);
     writeLittleEndian(metaData.getByteRate(),4);
-    writeLittleEndian(metaData.getBytesPerSample(),2);
+    writeLittleEndian(metaData.getBytesPerSampleTimesChannles(),2);
     writeLittleEndian(metaData.bitDepth,2);
     writeBigEndianString("data----");
+}
+
+WavFileWriter::~WavFileWriter() {
+    completeHeadersAndSave();
 }
 
 void WavFileWriter::completeHeadersAndSave() {
@@ -44,8 +51,4 @@ void WavFileWriter::completeHeadersAndSave() {
     goToPositionInStream(4);
     writeLittleEndian(fileLength-8,4);
     closeIfOpen();
-}
-
-WavFileWriter::~WavFileWriter() {
-    completeHeadersAndSave();
 }
