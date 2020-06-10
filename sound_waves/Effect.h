@@ -1,13 +1,35 @@
-//
-//  Effect.h
-//  sound_waves
-//
-//  Created by Adam Korba on 09/06/2020.
-//  Copyright © 2020 Adam Korba. All rights reserved.
-//
+#pragma once
 
-#ifndef Effect_h
-#define Effect_h
+#include "WavFileHandling.h"
+
+class EffectApplier : public WavFileWriter {
+    
+public:
+        
+    WavFileReader& source;
+    
+    EffectApplier(WavFileReader& source, FileLocationDetails destinationFile)
+    : source{source}, WavFileWriter(destinationFile, source.metaData) {}
+    
+    void virtual applyEffect() = 0;
+};
 
 
-#endif /* Effect_h */
+class DownSampler : public EffectApplier {
+  
+    char amount;
+    
+public:
+    
+    DownSampler(WavFileReader& source, FileLocationDetails destinationFile, char amount)
+    : EffectApplier(source, destinationFile), amount{amount} {}
+    
+    void applyEffect() override;
+    void getValuesFromFileToSampleTab(int * sampleTab);
+    void duplicateSamplesByAmount(int * sampleTab);
+};
+
+
+class Gain
+
+
