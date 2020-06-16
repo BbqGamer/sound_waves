@@ -14,13 +14,13 @@ public:
 };
 
 
-class DownSampler : public EffectApplier {
+class Downsampler : public EffectApplier {
   
     char amount;
     
 public:
     
-    DownSampler(WavFileReader& source, std::string destinationFileName, char amount)
+    Downsampler(WavFileReader& source, std::string destinationFileName, char amount)
     : EffectApplier(source, destinationFileName), amount{amount} {}
     
     void applyEffect() override;
@@ -47,14 +47,14 @@ private:
 };
 
 
-class Amplifyer : public EffectApplier {
+class Amplifier : public EffectApplier {
     
-    float multiplyer;
+    float multiplier;
     
 public:
     
-    Amplifyer(WavFileReader& source, std::string destinationFileName, float multiplyer)
-    : EffectApplier(source, destinationFileName), multiplyer{multiplyer} {}
+    Amplifier(WavFileReader& source, std::string destinationFileName, float multiplier)
+    : EffectApplier(source, destinationFileName), multiplier{multiplier} {}
     
     void applyEffect() override;
     

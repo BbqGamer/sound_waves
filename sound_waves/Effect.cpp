@@ -7,7 +7,7 @@ EffectApplier::EffectApplier(WavFileReader& source, std::string destinationFileN
 }
 
 
-void DownSampler::applyEffect() {
+void Downsampler::applyEffect() {
     int * sampleTab = new int[source.metaData.numChannels];
     
     while(source.readLittleEndianToBuffor()) {
@@ -18,7 +18,7 @@ void DownSampler::applyEffect() {
     delete [] sampleTab;
 }
 
-void DownSampler::getValuesFromFileToSampleTab(int * sampleTab) {
+void Downsampler::getValuesFromFileToSampleTab(int * sampleTab) {
     sampleTab[0] = source.getValueFromBuffor();
     for(int channel = 1; channel < source.metaData.numChannels; channel++) {
         source.readLittleEndianToBuffor();
@@ -27,7 +27,7 @@ void DownSampler::getValuesFromFileToSampleTab(int * sampleTab) {
 }
 
 
-void DownSampler::duplicateSamplesByAmount(int * sampleTab) {
+void Downsampler::duplicateSamplesByAmount(int * sampleTab) {
     for(int i = 0; i < amount; i++) {
         for(int channel = 0; channel < source.metaData.numChannels; channel++) {
             writeLittleEndian(sampleTab[channel],source.metaData.getBytesPerSample());
@@ -55,15 +55,15 @@ int BitReductor::getReducedValue(int initValue) {
 }
 
 
-void Amplifyer::applyEffect() {
+void Amplifier::applyEffect() {
     while(source.readLittleEndianToBuffor())
     {
         adjustSample();
     }
 }
 
-void Amplifyer::adjustSample() {
-    int newValue = source.getValueFromBuffor() * multiplyer;
+void Amplifier::adjustSample() {
+    int newValue = source.getValueFromBuffor() * multiplier;
     if(newValue > source.metaData.getMaxAmplitude()) {
         newValue = source.metaData.getMaxAmplitude();
     }

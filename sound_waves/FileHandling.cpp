@@ -100,7 +100,12 @@ bool FileReader::readLittleEndianToBuffor()
  
 int FileReader::getValueFromBuffor()
 {
-    return *((int *) buffor);
+    if(bufforSize == 1) {
+        return *((char *) buffor);
+    } else if (bufforSize == 2) {
+        return *((short *) buffor);
+    }
+    return *((int*) buffor);
 }
 
 
