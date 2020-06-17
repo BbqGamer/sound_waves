@@ -32,7 +32,6 @@ void FileReader::closeIfOpen() {
 }
 
 void FileReader::skipBytes(int numBytes) {
-    std::cout << "Skiped: " << numBytes << "bytes" << std::endl;
     fileStream.ignore(numBytes);
 }
     
